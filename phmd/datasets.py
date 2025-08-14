@@ -493,7 +493,7 @@ def load(dataset_name: str, task: str, cache_dir: str = None,
     return result
 
 def load_cv_sets(dataset_name: str, task_name, fold: int, num_folds: int = 5, preprocess=None,
-                 return_test=False, normalize_output=False, filters=None, random_state=666, test_pct=0.3):
+                 return_test=False, normalize_output=False, filters=None, random_state=666, test_pct=0.3, cache_dir=None):
     """
     Loads and preprocesses training, validation, and optionally test datasets for a specified task,
     with the option to normalize outputs and split the data for cross-validation.
@@ -553,12 +553,12 @@ def load_cv_sets(dataset_name: str, task_name, fold: int, num_folds: int = 5, pr
 
     # Load the dataset(s) based on the provided parameters
     if len(sets) > 1:
-        X, X_test = load(dataset_name, task=task_name, unzip='True', filters=filters)
+        X, X_test = load(dataset_name, task=task_name, unzip='True', filters=filters, cache_dir=cache_dir)
         if normalize_output:
             X = __normalize_output_by_unit(X, task)
             X_test = __normalize_output_by_unit(X_test, task)
     else:
-        X = load(dataset_name,  task=task_name, unzip='True', filters=filters)
+        X = load(dataset_name,  task=task_name, unzip='True', filters=filters, cache_dir=cache_dir)
         if isinstance(X, tuple) and len(X) == 2:
             X, X_test = X
 
@@ -848,7 +848,7 @@ class Dataset:
         self.dataset_name = dataset_name
         self.cache_dir = cache_dir or get_storage_dir()
         self.meta = self._load_meta()
-        self.tasks = [Task(self, task[_get_task_key(task)]) for task_name, task in self.meta['tasks'].items()]
+        self.tasks = [Task(self, task[_get_task_key(task)], cache_dir=self.cache_dir) for task_name, task in self.meta['tasks'].items()]
 
     def _load_meta(self):
         return read_meta(self.dataset_name)
@@ -883,9 +883,10 @@ class Dataset:
 
 
 class Task:
-    def __init__(self, dataset: Dataset, task_name: str):
+    def __init__(self, dataset: Dataset, task_name: str, cache_dir: str):
         self.dataset = dataset
         self.name = task_name
+        self.cache_dir = cache_dir or get_storage_dir()
         self.meta = _get_task(self.dataset.meta, task_name)
         self.features = self.meta["features"]
         self.target = _get_task_key(self.meta)
@@ -931,6 +932,7 @@ class Task:
             return_test=self.return_test,
             test_pct=self.test_pct,
             filters=self.filters,
+            cache_dir=self.cache_dir
         )
 
         set_keys = ",".join(list(sets.keys()))
