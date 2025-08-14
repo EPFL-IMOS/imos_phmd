@@ -363,7 +363,11 @@ def __load_dataset(dataset_name: str, ftype: str, cache_dir: str = None, task: s
             elif isinstance(_X, tuple):
                 X = _X
             else:
-                X = X.append(_X, ignore_index=True)
+
+                if not (isinstance(X, pd.DataFrame) and isinstance(_X, pd.DataFrame)):
+                    raise TypeError("Both X and _X must be pandas DataFrames to concatenate. Got types: X={}, _X={}".format(type(X), type(_X)))
+                X = pd.concat([X, _X], ignore_index=True) #X.append(_X, ignore_index=True)
+                
 
     return X
 
