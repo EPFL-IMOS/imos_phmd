@@ -171,45 +171,51 @@ The output informs the user about the status of the dataset, including whether i
 This work has been supported by Grant PID2019-109152GBI00/AEI/10.13039/501100011033 (Agencia Estatal de Investigacion), Spain and by the Ministry of Science and Education of Spain through the national program "Ayudas para contratos para la formacion de investigadores en empresas (DIN2019)", of State Programme of Science Research and Innovations 2017-2020.
 """
 
-setup(name="phmd",
-      url="https://github.com/dasolma/phmd",
-      version="2025.0.04",
-      description=DESCRIPTION,
-      long_description=LONG_DESCRIPTION,
-      long_description_content_type='text/markdown',
-      packages=find_packages(),
-      install_requires=["gdown==5.2.0",
-                        'pandas==2.0.3; python_version<"3.12"',
-                        'pandas==2.2.1; python_version>="3.12"',
-                        "h5py==3.11.0",
-                        'scipy==1.10.1; python_version<"3.12"',
-                        'scipy==1.13.0; python_version>="3.12"',
-                        "openpyxl==3.1.5",
-                        "tabulate==0.9.0",
-                        'PyWavelets==1.4.1; python_version<"3.12"',
-                        'PyWavelets==1.8.0; python_version>="3.12"',
-                        'scikit-learn==1.3.2; python_version<"3.12"',
-                        'scikit-learn==1.5.0; python_version>="3.12"'
-                        ],
-      entry_points={
-          "console_scripts": []
-      },
-      license = 'GNU GPL',
-      classifiers=[
-          "Programming Language :: Python :: 3.8",
-          "Programming Language :: Python :: 3.12",
-          "Operating System :: OS Independent",
-      ],
-      package_data={
-          "phmd.metadata": ["*.json"],
-      },
-      include_package_data=True,
-      author="David Solís-Martín",
-      author_email="dsolis@us.es",
-      maintainer="David Solís-Martín",
-      maintainer_email="dsolis@us.es",
-      keywords=[
-          "predictive maintenance", "condition monitoring", "datasets", "gear", "bearing", "battery", "AI",
-          "artificial intelligence"
-      ],
-      )
+setup(
+    name="phmd",
+    url="https://github.com/dasolma/phmd",
+    version="2025.0.04",
+    description=DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
+    packages=find_packages(),
+    install_requires=[
+        "gdown==5.2.0",
+        'pandas==2.0.3; python_version<"3.12"',
+        'pandas==2.3.2; python_version>="3.12"',
+        "h5py==3.14.0",
+        'scipy==1.10.1; python_version<"3.12"',
+        'scipy==1.15.3; python_version>="3.12"',
+        "openpyxl==3.1.5",
+        "tabulate==0.9.0",
+        'PyWavelets==1.4.1; python_version<"3.12"',
+        'PyWavelets==1.8.0; python_version>="3.12"',
+        'scikit-learn==1.3.2; python_version<"3.12"',
+        'scikit-learn==1.7.0; python_version>="3.12"',
+    ],
+    entry_points={"console_scripts": []},
+    license="GNU GPL",
+    classifiers=[
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.12",
+        "Operating System :: OS Independent",
+    ],
+    package_data={
+        "phmd.metadata": ["*.json"],
+    },
+    include_package_data=True,
+    author="David Solís-Martín",
+    author_email="dsolis@us.es",
+    maintainer="David Solís-Martín",
+    maintainer_email="dsolis@us.es",
+    keywords=[
+        "predictive maintenance",
+        "condition monitoring",
+        "datasets",
+        "gear",
+        "bearing",
+        "battery",
+        "AI",
+        "artificial intelligence",
+    ],
+)
