@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import os
 import tqdm
@@ -62,7 +63,7 @@ def read_files(file_path, dirs, files, z=None, RULS=None, filters: dict = None):
 
     dirs, files = filter_files(dirs, files, filters)
     datasets = []
-
+    dict_colector = dict()
     with tqdm.tqdm(total=len(files), desc="Reading dataset") as pbar:
 
         for bearing in dirs:
@@ -71,6 +72,14 @@ def read_files(file_path, dirs, files, z=None, RULS=None, filters: dict = None):
             bearing_files = sorted([f for f in files if bearing in f and "acc" in f])
 
             ds = []
+            # It is consistently 1 file more than reported in papers, implying +10sec of recondings, hence I cut from beginning
+            # bearing_files = bearing_files[1:]
+
+            if bearing.split("/")[-1] == "Bearing1_4":
+                bearing_files = bearing_files[11:]
+            else:
+                bearing_files = bearing_files[1:]
+
             for i, bearing_file in enumerate(bearing_files):
                 if z is None:
                     with open(os.path.join(file_path, bearing_file), "r") as f:
@@ -81,18 +90,29 @@ def read_files(file_path, dirs, files, z=None, RULS=None, filters: dict = None):
                         ds.append(read_file(f, bearing_file, bearing))
 
                 pbar.update()
+            # collect number of files to make sure the data is correct
+            dict_colector[bearing] = len(bearing_files)
 
+            assert all(np.array([d.shape[0] for d in ds]) == 2560), "Something is wrong"
             X = pd.concat(ds, axis=0)
             X = X.reset_index(drop=True)
 
             # compute RUL
-            X["RUL"] = (X.index / 2560).astype("int")[::-1].values
-
-            if RULS is not None:
-                X["RUL"] += RULS[bearing.split("/")[-1]]
+            X["RUL"] = (X.index / 256).astype("int")[::-1].values
+            # TODO: Truncate?
+            # if RULS is not None:
+            #     X["RUL"] += RULS[bearing.split("/")[-1]]
 
             X.RUL = X.RUL.astype("int32")
             datasets.append(X)
+        # Print a header for the table
+        print("Number of files loaded per bearing, each file consists 10 sec.")
+        print(f"{'Key':<20} | {'Value':<10}")
+        print("-" * 33)
+
+        # Iterate through the dictionary and print each row
+        for key, value in dict_colector.items():
+            print(f"{key:<2} | {value:<10.2f}")
 
     return datasets
 
