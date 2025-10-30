@@ -98,7 +98,7 @@ def read_files(file_path, dirs, files, z=None, RULS=None, filters: dict = None):
             X = X.reset_index(drop=True)
 
             # compute RUL
-            X["RUL"] = (X.index / 256).astype("int")[::-1].values
+            X["RUL"] = (X.index / 2560).astype("int")[::-1].values
             # TODO: Truncate?
             # if RULS is not None:
             #     X["RUL"] += RULS[bearing.split("/")[-1]]
