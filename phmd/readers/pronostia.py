@@ -100,6 +100,8 @@ def read_files(file_path, dirs, files, z=None, RULS=None, filters: dict = None):
             # compute RUL
             X["RUL"] = (X.index / 2560).astype("int")[::-1].values
 
+            # Added to match the paper's RULs measurements in seconds
+            X["RUL"] = X["RUL"] * 10
             if RULS is not None:
                 X["RUL"] += RULS[bearing.split("/")[-1]]
 
