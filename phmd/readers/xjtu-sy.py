@@ -163,7 +163,10 @@ def read_files(
 def read_dataset(file_path: str, task: dict = None, filters: dict = None):
 
     if os.path.isdir(file_path):
-        dirs = sorted(os.listdir(file_path))
+        dirs = sorted(
+            d for d in os.listdir(file_path)
+            if os.path.isdir(os.path.join(file_path, d))
+        )
         files = [
             os.path.join(_dir, file)
             for _dir in dirs
